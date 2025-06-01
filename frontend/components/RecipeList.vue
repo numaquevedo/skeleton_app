@@ -151,7 +151,9 @@ const fetchData = async () => {
             keyword: filters.value.keyword,
             ingredient: filters.value.ingredient,
             page: page.value,
-        }).toString()
+        }).toString();
+
+        console.log(query);
 
         const response = await fetch(`http://localhost:8888/api/recipes?${query}`, {
             method: 'GET',

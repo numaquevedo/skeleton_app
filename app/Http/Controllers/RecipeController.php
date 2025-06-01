@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 class RecipeController extends Controller
 {
+    const MAX_RECORDS_PER_PAGE = 5;
 
     /**
      * Display a listing of the resource.
@@ -58,14 +59,14 @@ class RecipeController extends Controller
             });
         }
 
-        $recipesList = $recipesQuery->get();
+        $recipesList = $recipesQuery->simplePaginate(self::MAX_RECORDS_PER_PAGE);
 
         if ($recipesList->isEmpty()) {
             return new RecipeResponseResource([]);
         }
 
         // Return the recipes
-        return new RecipeResponseResource(['recipes' => $recipesList]);
+        return new RecipeResponseResource(['recipes' => $recipesList->items()]);
     }
 
     /**
