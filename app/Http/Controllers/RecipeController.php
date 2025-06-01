@@ -69,15 +69,6 @@ class RecipeController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        // Default response
-        return new RecipeResponseResource(['status' => 'not available']);
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(string $slug): RecipeDetailsResource
