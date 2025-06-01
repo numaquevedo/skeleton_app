@@ -14,5 +14,10 @@
     "nuxt": "^3.7.4",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.2.0",
+    "@nuxtjs/tailwindcss": "^7.0.0-beta.0",
+    "@tailwindcss/postcss": "^4.1.8"
   }
 }
