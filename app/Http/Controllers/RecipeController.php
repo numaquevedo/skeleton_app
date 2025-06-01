@@ -24,6 +24,7 @@ class RecipeController extends Controller
 
         // Filter by author email if we received it in the query.
         if ($request->filled('email')) {
+            // Match precisely by the author's email.
             $recipesQuery->whereHas('author', function ($query) use ($request) {
                 $query->where('email', $request->get('email'))->select('id');
             });
@@ -32,12 +33,15 @@ class RecipeController extends Controller
         // Filter by keyword
         if ($request->filled('keyword')) {
             $recipesQuery->where(function ($keywordQuery) use ($request) {
+                // Match either the Recipe's name or description.
                 $keywordQuery->where('name', 'like', '%' . $request->get('keyword') . '%')
                     ->orWhere('description', 'like', '%' . $request->get('keyword') . '%')
+                    // Try to match any ingredient that has the keyword.
                     ->orWhereHas('ingredients', function ($query) use ($request) {
                         $query->where('ingredient_details', 'like', '%' . $request->get('keyword') . '%')
                             ->select('id');
                     })
+                    // try to match any recipe's steps with the keyword.
                     ->orWhereHas('steps', function ($query) use ($request) {
                         $query->where('step', 'like', '%' . $request->get('keyword') . '%')
                             ->select('id');
@@ -47,6 +51,7 @@ class RecipeController extends Controller
 
         // Filter by Ingredient
         if ($request->filled('ingredient')) {
+            // Try to match specifically by ingredient.
             $recipesQuery->whereHas('ingredients', function ($query) use ($request) {
                 $query->where('ingredient_details', 'like', '%' . $request->get('ingredient') . '%')
                     ->select('id');
@@ -107,21 +112,5 @@ class RecipeController extends Controller
                 'gravatar' => $recipeDetails->author->gravatar,
             ]
         ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
