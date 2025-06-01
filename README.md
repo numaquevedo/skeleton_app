@@ -52,3 +52,23 @@ Or use any database GUI and connect to 127.0.0.1 port 3333
 
 Sometimes it's necessary to restart the nuxt app when adding new routes. Simply `ctrl+c` on the npm command execute
 `./vendor/bin/sail npm run dev --prefix frontend` again
+
+---
+### Instructions to run the new version of the app
+
+#### Adding test data to the database.
+After executing the setup instructions, you can run the following commands to create and delete test data:
+
+`./vendor/bin/sail artisan app:seed-data --authors=2 --recipes=4 --steps=3 --ingredients=5`
+
+Feel free to change the values of the flags to create more or less records.
+
+#### Removing all the test data from the database
+The following command will truncate the tables that were created for this app:
+
+`./vendor/bin/sail artisan app:reset-data`
+
+#### Running the tests
+The following command will run all the tests. There is only one class handling all the test cases:
+
+`./vendor/bin/sail artisan test`
