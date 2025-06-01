@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GetRecipesListRequest;
+use App\Http\Resources\RecipeDetailsResource;
 use App\Http\Resources\RecipeResponseResource;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class RecipeController extends Controller
         $recipesQuery = Recipe::with(['author' => function ($query) {
             $query->select('id', 'name', 'email', 'gravatar');
         }])
-            ->select('name', 'author_id');
+            ->select('id', 'name', 'author_id', 'slug');
 
         // Filter by author email if we received it in the query.
         if ($request->filled('email')) {
@@ -30,12 +31,12 @@ class RecipeController extends Controller
 
         // Filter by keyword
         if ($request->filled('keyword')) {
-            $recipesQuery->where(function($keywordQuery) use ($request) {
+            $recipesQuery->where(function ($keywordQuery) use ($request) {
                 $keywordQuery->where('name', 'like', '%' . $request->get('keyword') . '%')
                     ->orWhere('description', 'like', '%' . $request->get('keyword') . '%')
                     ->orWhereHas('ingredients', function ($query) use ($request) {
                         $query->where('ingredient_details', 'like', '%' . $request->get('keyword') . '%')
-                        ->select('id');
+                            ->select('id');
                     })
                     ->orWhereHas('steps', function ($query) use ($request) {
                         $query->where('step', 'like', '%' . $request->get('keyword') . '%')
@@ -74,9 +75,30 @@ class RecipeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $slug)
+    public function show(string $slug): RecipeDetailsResource
     {
-        //
+        // Get the details of the recipe
+        $recipeDetails = Recipe::with(['author' => function ($query) {
+            $query->select('id', 'name', 'email', 'gravatar');
+        }])
+            ->select('id', 'author_id', 'name', 'description')
+            ->where('slug', $slug)
+            ->first();
+
+        if (empty($recipeDetails)) {
+            return new RecipeDetailsResource([]);
+        }
+
+        // Return the details of the recipe.
+        return new RecipeDetailsResource([
+            'name' => $recipeDetails->name,
+            'description' => $recipeDetails->description,
+            'author' => [
+                'name' => $recipeDetails->author->name,
+                'email' => $recipeDetails->author->email,
+                'gravatar' => $recipeDetails->author->gravatar,
+            ]
+        ]);
     }
 
     /**
