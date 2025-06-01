@@ -81,6 +81,12 @@ class RecipeController extends Controller
         $recipeDetails = Recipe::with(['author' => function ($query) {
             $query->select('id', 'name', 'email', 'gravatar');
         }])
+            ->with(['ingredients' => function ($query) {
+                $query->select('id', 'recipe_id', 'ingredient_details');
+            }])
+            ->with(['steps' => function ($query) {
+                $query->select('id', 'recipe_id', 'step')->orderBy('step_order', 'asc');
+            }])
             ->select('id', 'author_id', 'name', 'description')
             ->where('slug', $slug)
             ->first();
@@ -93,6 +99,8 @@ class RecipeController extends Controller
         return new RecipeDetailsResource([
             'name' => $recipeDetails->name,
             'description' => $recipeDetails->description,
+            'steps' => $recipeDetails->steps ?? [],
+            'ingredients' => $recipeDetails->ingredients ?? [],
             'author' => [
                 'name' => $recipeDetails->author->name,
                 'email' => $recipeDetails->author->email,

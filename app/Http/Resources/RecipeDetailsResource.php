@@ -19,6 +19,8 @@ class RecipeDetailsResource extends JsonResource
             'status' => $this->resource['status'] ?? 'success',
             'name' => $this->resource['name'] ?? '',
             'description' => $this->resource['description'] ?? '',
+            'steps' => $this->resource['steps'] ?? [],
+            'ingredients' => $this->resource['ingredients'] ?? [],
             'author' => [
                 'name' => $this->resource['author']['name'] ?? '',
                 'email' => $this->resource['author']['email'] ?? '',

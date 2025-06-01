@@ -1,6 +1,5 @@
 <template>
     <RecipeDetails/>
-    <NuxtLink :to="{ path: '/', query: route.query }">Back</NuxtLink>
 </template>
 <script setup>
 import RecipeDetails from "~/components/RecipeDetails.vue";
