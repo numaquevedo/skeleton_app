@@ -46,6 +46,12 @@ class DataSeeder extends Command
             ->create();
     }
 
+    /**
+     * Method to safely retrieve an integer from the options passed to the script.
+     * @param string $optionName
+     * @param int $defaultValue
+     * @return array|bool|int|string|null
+     */
     public function getSafeValueFromOption(string $optionName, int $defaultValue)
     {
         if(!is_numeric($this->option($optionName))) {
